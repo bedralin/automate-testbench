@@ -9,13 +9,13 @@ because this may be sensitive information which I am not allowed to give. Just k
 when writing your automation script, pay attention to the timing. So critical!
 
 Special credit goes to: 
-my buddy Harley Cumming <harleys@hawaii.edu>
-Instrumentation Development Lab (IDL) 
+my buddy Harley Cumming <harleys@hawaii.edu> \n
+Instrumentation Development Lab (IDL) \n
 Physics and Astronomy Department, University of Hawaii at Manoa. 
 
 Without their support, none of this would be possible.
 
-In order for this to work, you must install the package called python-vxi11:
+In order for this to work, you must install the package called python-vxi11: \n
 https://github.com/python-ivi/python-vxi11
 
 Feel free to email me for any help:
