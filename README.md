@@ -10,8 +10,7 @@ when writing your automation script, pay attention to the timing. So critical!
 
 Special credit goes to: 
 - my buddy Harley Cumming <harleys@hawaii.edu> 
-- Instrumentation Development Lab (IDL) 
-- Physics and Astronomy Department, University of Hawaii at Manoa. 
+- Instrumentation Development Lab (IDL), Physics and Astronomy Department, University of Hawaii at Manoa
 
 Without their support, none of this would be possible.
 
