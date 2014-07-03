@@ -23,4 +23,5 @@ You will also need to install PySerial:
 
 Feel free to email me for any help:
 - Bronson Edralin <bedralin@hawaii.edu>
+- MS Electrical Engineering Graduate Student and Research Assistant
 - Instrumentation Development Lab (IDL), Physics and Astronomy Department, University of Hawaii at Manoa
