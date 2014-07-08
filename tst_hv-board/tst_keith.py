@@ -1,10 +1,27 @@
+#!/usr/bin/env python
+#Following command will print documentation of tst_keith.py:
+#pydoc tst_keith
+
+"""
+OVERVIEW:
+Test script to control an Instrument called:
+Keithley 2010 Multimeter
+
+AUTHORS:
+Bronson Edralin <bedralin@hawaii.edu>
+University of Hawaii at Manoa
+Instrumentation Development Lab (IDLab), WAT214
+ 
+HOW TO USE:
+sudo python tst_keith.py
+"""
+
 import csv
 import math
 import datetime
 import subprocess
 from collections import *
 from link import * 
-from channel import Channel
 from threading import Lock
 from keithley_2010 import *
 import vxi11
@@ -29,9 +46,8 @@ time.sleep(1)
 #print con
 print "ok man ok man"
 keith.configure_voltage="dc"
-con=keith.configure
 #time.sleep(1)
-print "This should be voltage DC: "+str(con)
+print "This should be voltage DC: "+keith.configure
 
 keith.configure="resistance"
 #time.sleep(1)

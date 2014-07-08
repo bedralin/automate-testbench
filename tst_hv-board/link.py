@@ -20,7 +20,7 @@ RS232 Class used to access Instrument through RS-232 via USB.
 INSTRUCTIONS:
 In order to make this work, you need to install vxi11 package/module from:
 https://github.com/python-ivi/python-vxi11
-Big Special Thanks go to: 
+Big Special Thanks, for creating vxi11, go to: 
 Alex Forencich <alex@alexforencich.com>   
 Michael Walle <michael@walle.cc>
 """
@@ -76,7 +76,7 @@ class Ethernet:
 #RS232 Class is used to access Instrument through RS-232 via USB.
 class RS232:
     def __init__(self,port='/dev/ttyUSB0',baudrate=9600,databits=8, \
-		parity='None',stopbits=1,timeout=0.25,xonxoff=False,rtscts=False):
+		parity='None',stopbits=1,timeout=0.06,xonxoff=False,rtscts=False):
 	self.port = port  # Device name or port #
 	self.baudrate = int(baudrate)  # Baud rate such as 9600
 	self.databits = int(databits)  # Number of databits such as 5,6,7,8
@@ -134,7 +134,7 @@ class RS232:
 	    result += self.ser.read(1)
         self.ser.close()   #Close Serial port
 	if result != '':
-	    return result
+	    return str(result)
 	else:
             print "There was no feedback from device!"
 
@@ -155,6 +155,7 @@ class RS232:
 	    print result
 	else:
 	    print "There was no feedback from device!"
-        return result
+        return str(result)
+
 
 

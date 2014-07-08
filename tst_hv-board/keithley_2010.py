@@ -73,7 +73,8 @@ class Keithley_2010(object):
 
     @property
     def configure_voltage(self):
-        return self.link.ask(":CONFigure?")
+        volt,acdc = self.link.ask(":CONFigure?").split(':')
+	return "Configuration is: "+acdc+" Voltage"
 
     @configure_voltage.setter
     def configure_voltage(self,acdc):
@@ -86,7 +87,8 @@ class Keithley_2010(object):
  
     @property
     def configure_current(self):
-        return self.link.ask(":CONFigure?")
+        curr,acdc = self.link.ask(":CONFigure?").split(':')
+        return "Configuration is: "+acdc+" Current"
 
     @configure_current.setter
     def configure_current(self,acdc):
