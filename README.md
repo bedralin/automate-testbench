@@ -28,4 +28,3 @@ Feel free to email me for any help:
 - Instrumentation Development Lab (IDL), Physics and Astronomy Department, University of Hawaii at Manoa
 
 =======
->>>>>>> FETCH_HEAD
