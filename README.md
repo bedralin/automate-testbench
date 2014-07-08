@@ -26,4 +26,7 @@ Feel free to email me for any help:
 - BS Electrical Engineering, May 2014
 - MS Computer Engineering Graduate Student and Research Assistant
 - Instrumentation Development Lab (IDL), Physics and Astronomy Department, University of Hawaii at Manoa
+<<<<<<< HEAD
 
+=======
+>>>>>>> FETCH_HEAD
