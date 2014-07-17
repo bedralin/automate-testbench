@@ -23,13 +23,15 @@ HOW TO USE:
 from link import *
 
 class Keithley_2010(object):
-    def __init__(self, addr=None):
+    def __init__(self, addr=None,port=None):
         addr=addr.upper()
         #Set up link connection. Either RS232 via USB or GPIO via Ethernet
         if (addr == 'RS232') or (addr == 'RS-232'):
             self.link = RS232()
-        elif (addr != None):
+        elif (addr != None) and (port == None):
             self.link = Ethernet(addr)
+	elif (addr != None) and (port != None):
+	    self.link = Ethernet_Controller(addr,port)
         else:
             print "Invalid address: "+str(addr)
 
@@ -73,8 +75,7 @@ class Keithley_2010(object):
 
     @property
     def configure_voltage(self):
-        volt,acdc = self.link.ask(":CONFigure?").split(':')
-	return "Configuration is: "+acdc+" Voltage"
+        return self.link.ask(":CONFigure?")
 
     @configure_voltage.setter
     def configure_voltage(self,acdc):
@@ -87,8 +88,7 @@ class Keithley_2010(object):
  
     @property
     def configure_current(self):
-        curr,acdc = self.link.ask(":CONFigure?").split(':')
-        return "Configuration is: "+acdc+" Current"
+        return self.link.ask(":CONFigure?")
 
     @configure_current.setter
     def configure_current(self,acdc):

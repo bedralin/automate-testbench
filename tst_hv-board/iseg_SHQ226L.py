@@ -60,7 +60,7 @@ class Iseg_SHQ226L(object):
             chan = int(chan)
             self.chan = str(valid_channels[valid_channels.index(chan)])
         except ValueError:
-            print "Invalid Channel Number: "+str(chan)+". Channels 1-8 only."
+            print "Invalid Channel Number: "+str(chan)
 
     # Read module identifier
     # nnnn	;n.nn		;U	    ;I*
@@ -84,16 +84,12 @@ class Iseg_SHQ226L(object):
     @break_time.setter
     def break_time(self, cmd):
         try:
-            cmd = float(cmd)
-            if cmd >= 0 and cmd <= 255:
-                #print ("W"+"="+str(cmd))  #Uncomment for debug
-                self.link.cmd("W"+"="+str(cmd))
-            else:
-                print "Invalid Break Time Value: "+str(cmd)+\
-                " (ms). Break Time Range: 0-255 ms"
+            cmd = int(cmd)
         except ValueError:
-            print "Invalid Break Time Value: "+str(cmd)+\
-            " (ms). Break Time Range: 0-255 ms"
+            print "Invalid Break Time (ms) Value: "+str(cmd)
+        else:
+            #print ("W"+"="+str(cmd))  #Uncomment for debug
+            self.link.cmd("W"+"="+str(cmd))
 
     # Read actual voltage (V) on channel
     # {polarity/mantisse/exp. with sign}      (in V)
@@ -160,16 +156,12 @@ class Iseg_SHQ226L(object):
     @ramp_speed.setter
     def ramp_speed(self, cmd):
         try:
-            cmd = float(cmd)
-            if cmd >= 2 and cmd <= 255:
-                #print ("V"+self.chan+"="+str(cmd))  #Uncomment for debug
-                self.link.cmd("V"+self.chan+"="+str(cmd))
-            else:
-                print "Invalid Break Time Value: "+str(cmd)+\
-                " (V/s). Ramp Speed Range: 2-255 V/s"
+            cmd = int(cmd)
         except ValueError:
-            print "Invalid Break Time Value: "+str(cmd)+\
-            " (V/s). Ramp Speed Range: 2-255 V/s"
+            print "Invalid Ramp Speed Value: "+str(cmd)
+        else:
+            #print ("V"+self.chan+"="+str(cmd))  #Uncomment for debug    
+            self.link.cmd("V"+self.chan+"="+str(cmd))
 
     # Read current trip on channel 
     # (trip corresponding resolution Range: A>0) 
