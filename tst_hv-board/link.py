@@ -8,13 +8,14 @@ Link Drivers to establish connection
 with Instruments
 
 AUTHORS:
-Harley Cumming <harleys@hawaii.edu>
 Bronson Edralin <bedralin@hawaii.edu>
+Harley Cumming <harleys@hawaii.edu>
 University of Hawaii at Manoa
 Instrumentation Development Lab (IDLab), WAT214
 
 DESCRIPTION:
-Ethernet Class used to access Intsrument through GPIB via Ethernet.
+Ethernet Class used to access Intsrument through direct Ethernet port via Ethernet.
+Ethernet_Controller Class used to access Instrument through GPIB via Ethernet.
 RS232 Class used to access Instrument through RS-232 via USB.
 """
 
@@ -73,7 +74,7 @@ class Ethernet_Controller:
     def __init__(self, addr=None, port=None):
 	self.addr = str(addr)    
 	self.mutex = Lock()
-	self.delay = 0
+	self.delay = 0.5
 	self.timeout = 0.5
 	try:
 	    self.port = int(port)
@@ -106,6 +107,10 @@ class Ethernet_Controller:
 	self.sock.settimeout(self.timeout)
 	print "Socket timeout set to: " + str(self.timeout) + "secs"
 
+    def sock_delay(self, delay=0.5):
+        self.delay = delay
+        print "Delay in between commands are: " + str(self.delay) + "secs"
+
     def sock_close(self):
 	self.sock.close()
 	print "Socket is now closed"
@@ -113,7 +118,6 @@ class Ethernet_Controller:
     # cmd is used for write commands
     def cmd(self,cmd=None):
         self.mutex.acquire()  # User is using it so lock it
-	print "cmd started"
 	"""
 	try:
 	    self.sock.connect((self.addr, self.port))
@@ -135,14 +139,12 @@ class Ethernet_Controller:
 	    print "Send failed!"
         finally:
 	    #self.sock.close()
-	    print "cmd"
             self.mutex.release()  # User is done so unlock it
 
     # ask used for reading value/string from instrument
     def ask(self, cmd=None):
         self.mutex.acquire()  # User is using it so lock it
 	self.result = None
-	print "ask started"
 	"""
         try:
             self.sock.connect((self.addr, self.port))
@@ -161,11 +163,14 @@ class Ethernet_Controller:
             self.sock.send(str(cmd)+"\r\n\r\n")
 	    time.sleep(self.delay)
         except socket.error:
-            print "Send failed"
+            print "Send failed!"
         finally:
-	    self.result = self.sock.recv(100)
+	    try:
+		self.result = self.sock.recv(100)
+	    except socket.timeout:
+		print "Socket Timeout has occured!"
+		self.result = ""
 	    #self.sock.close()
-	    print "ask"
             self.mutex.release()  # User is done so unlock it
 	    return self.result
 	
@@ -173,6 +178,7 @@ class Ethernet_Controller:
     def ask_print(self, cmd=None):
         self.mutex.acquire()  # User is using it so lock it
         self.result = None
+	"""
         try:
             self.sock.connect((self.addr, self.port))
         except TypeError:
@@ -185,14 +191,19 @@ class Ethernet_Controller:
 	    ") with port #" + str(self.port) + "."
             print "\nSocket Error!"
             sys.exit()
+	"""
         try:
             self.sock.send(str(cmd)+"\r\n\r\n")
             time.sleep(self.delay)
         except socket.error:
             print "Send failed!"
         finally:
-            self.result = self.sock.recv(100)
-	    self.sock.close()
+	    try:
+		self.result = self.sock.recv(100)
+	    except socket.timeout:
+		print "Socket Timeout has occured!"
+		self.result = ""
+	    #self.sock.close()
             self.mutex.release()  # User is done so unlock it
 	    print self.result
             return self.result
@@ -201,7 +212,7 @@ class Ethernet_Controller:
 #RS232 Class is used to access Instrument through RS-232 via USB.
 class RS232:
     def __init__(self,port='/dev/ttyUSB0',baudrate=9600,databits=8, \
-		parity='None',stopbits=1,timeout=0.525,xonxoff=False,rtscts=False):
+		parity='None',stopbits=1,timeout=1,xonxoff=False,rtscts=False):
 	self.port = port  # Device name or port #
 	self.baudrate = int(baudrate)  # Baud rate such as 9600
 	self.databits = int(databits)  # Number of databits such as 5,6,7,8
@@ -220,8 +231,9 @@ class RS232:
 	    print "Invalid Parity: ",parity
 	self.stopbits = int(stopbits)  # Numb of stop bits such as 1,1.5,2
 	self.timeout = float(timeout)    # Set read timeout
-	self.xonxoff = xonxoff  # Enable software flow control: True/False
-	self.rtscts = rtscts  # Enable hardware (RTS/CTS) flow control: True/False
+	#self.xonxoff = xonxoff  # Enable software flow control: True/False
+	#self.rtscts = rtscts  # Enable hardware (RTS/CTS) flow control: True/False
+	self.delay = 1 
 
         #Open the serial port
         self.ser=serial.Serial(
@@ -231,8 +243,9 @@ class RS232:
             stopbits = self.stopbits,
             bytesize = self.databits
         )
-        self.ser.xonxoff = self.xonxoff
-        self.ser.rtscts = self.rtscts
+        #self.ser.xonxoff = self.xonxoff
+        #self.ser.rtscts = self.rtscts
+	self.ser.timeout = self.timeout
 	self.ser.close()
 
     def cmd(self,cmd=None):
@@ -278,15 +291,16 @@ class RS232:
         #       This is requested by some devices like the
 	#	ISEG SHQ226L HV Power Supply
         self.ser.write(cmd + '\r\n')
-	result=''
-	time.sleep(self.timeout)  #Wait for response from device
+	result = ''
+	time.sleep(self.delay)  #Wait for response from device
 	while self.ser.inWaiting() > 0:
 	    result += self.ser.read(1)
-        self.ser.close()   #Close Serial port
 	if result != '':
-	    return result
+	    print str(result) + "wow man u see this?"
+	    return str(result)
 	else:
             print "There was no feedback from device!"
+	self.ser.close()  # Close Serial Port
 
     def ask_print(self,cmd=None):
 	"""
@@ -309,11 +323,11 @@ class RS232:
 	#	ISEG SHQ226L HV Power Supply
         self.ser.write(cmd + '\r\n')
         result=''
-        time.sleep(self.timeout)   #Wait for response from device
+        time.sleep(self.delay)   #Wait for response from device
         while self.ser.inWaiting() > 0:
             result += self.ser.read(1)
         self.ser.close()   #Close Serial port
-	if result != '':
+	if result != ' ':
 	    print result
 	else:
 	    print "There was no feedback from device!"

@@ -129,7 +129,8 @@ class Iseg_SHQ226L(object):
     def set_voltage(self):
 	#print ("D"+self.chan)  #Uncomment for debug
 	#self.link.ask_print("D"+self.chan)  # Print Instrument's Resp    
-        return str(self.link.ask("D"+self.chan))
+        output = self.link.ask("D"+self.chan)
+	return output
 
     # Write set voltage on channeli
     # (voltage correspondig resolution in V; <M1)

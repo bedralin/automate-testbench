@@ -49,7 +49,7 @@ class Keithley_2010(object):
 
     def reset(self):
         self.link.cmd("*RST")
-        self.link.cmd("*CLS")
+        #self.link.cmd("*CLS")
 
     # *IDN? - Identification Query: Read identification code
     def identification(self):
@@ -58,6 +58,14 @@ class Keithley_2010(object):
     def self_test_query(self):
 	return self.link.ask("*TST?")
 
+    def Check_Error(self):
+	error_numb,error = self.link.ask("SYST:ERR?").split(',')
+	if (error_numb != "0") and (error_numb != "-420"):
+	    print "Error has occured: "+error_numb+", "+error
+	    return "Error has occured: "+error_numb+", "+error
+	elif (error_numb == "-420"):
+            print "Error has occured: "+error_numb+", "+error
+            return "Error has occured: "+error_numb+", "+error    
     # SCPI signal oriented measurement commands
     @property
     def configure(self):
@@ -98,4 +106,17 @@ class Keithley_2010(object):
             raise ValueError("Invalid Configuration of Current")
         else:
             self.link.cmd("CONFigure:CURRent:"+acdc)   
+
+    @property
+    def voltage_unit(self):
+        return self.link.ask(":UNIT:VOLTage:AC?")
+
+    @voltage_unit.setter
+    def voltage_unit(self, unit):
+        valid_set = {'VPP','VRMS','DBM'}
+        unit = unit.upper()
+        if unit not in valid_set:
+            raise ValueError("Invalid units for voltage")
+        else:
+            self.link.cmd("VOLTage:UNIT "+unit)
 
