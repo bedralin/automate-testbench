@@ -41,9 +41,11 @@ channel = iseg.channel
 print "Channel is: "+channel
 
 # Set Voltage
-iseg.set_voltage = 5 
+iseg.set_voltage = 4.5 
+time.sleep(0.5)
 set2_voltage = iseg.set_voltage
-print "Set voltage is: "+set2_voltage 
+
+print "Set voltage is: %r" %set2_voltage 
 
 
 

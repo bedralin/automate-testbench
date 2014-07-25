@@ -133,12 +133,12 @@ class Ethernet_Controller:
 	    sys.exit()
 	"""
         try:
-            self.sock.send(str(cmd)+"\r\n\r\n")
+            self.sock.send(str(cmd)+"\r\n")
             time.sleep(self.delay)
 	except socket.error:
 	    print "Send failed!"
         finally:
-	    #self.sock.close()
+	    self.sock.close()
             self.mutex.release()  # User is done so unlock it
 
     # ask used for reading value/string from instrument
@@ -212,7 +212,7 @@ class Ethernet_Controller:
 #RS232 Class is used to access Instrument through RS-232 via USB.
 class RS232:
     def __init__(self,port='/dev/ttyUSB0',baudrate=9600,databits=8, \
-		parity='None',stopbits=1,timeout=1,xonxoff=False,rtscts=False):
+		parity='None',stopbits=1,timeout=3,xonxoff=False,rtscts=False):
 	self.port = port  # Device name or port #
 	self.baudrate = int(baudrate)  # Baud rate such as 9600
 	self.databits = int(databits)  # Number of databits such as 5,6,7,8
@@ -269,6 +269,7 @@ class RS232:
         #       This is requested by some devices like the 
 	#	ISEG SHQ226L HV Power Supply
 	self.ser.write(cmd + '\r\n')
+	time.sleep(self.delay)
 	self.ser.close()  #Close Serial port
 
     def ask(self,cmd=None):
@@ -293,10 +294,12 @@ class RS232:
         self.ser.write(cmd + '\r\n')
 	result = ''
 	time.sleep(self.delay)  #Wait for response from device
+	#result=self.ser.readline(4000)
+    
 	while self.ser.inWaiting() > 0:
-	    result += self.ser.read(1)
+	    result += self.ser.readline(1)
+    
 	if result != '':
-	    print str(result) + "wow man u see this?"
 	    return str(result)
 	else:
             print "There was no feedback from device!"
