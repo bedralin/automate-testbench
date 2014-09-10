@@ -4,9 +4,8 @@ automate-testbench
 In this repository, I am open-sourcing some of my code used to automate a certain test-bench. 
 You may use these as examples to start your own fun automation of hardware. I noticed that 
 there was not much information online about automating test-benches so I am giving you some 
-sample code of what I have to get you started. I can not give you my full automation code, 
-because this may be sensitive information which I am not allowed to give. Just keep in mind,
-when writing your automation script, pay attention to the timing. So critical!
+sample code of what I have to get you started. Sorry, I will not be posting my full automation 
+code. Just keep in mind, when writing your automation script, pay attention to the timing. So critical!
 
 Shoutout to my buddy Harley Cumming for showing me the beauty of Computer Engineering!
 
