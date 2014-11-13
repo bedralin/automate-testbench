@@ -10,15 +10,9 @@ import psycopg2
 import logging
 import csv
 
-__author__ = "Bronson Edralin"
-__copyright__ = "Copyright 2014 Instrumentation Development Laboratory (IDLab), Department of Physics, University of Hawaii at Manoa"
-__version__ = "1.00"
-__maintainer__ = "Bronson Edralin"
-__email__ = "bedralin@hawaii.edu"
-__status__ = "Ready"
 
 DEBUG=False # NOT NECESSARY because error is printed in HVB_ASSEMBLY_log file
-	   # setting DEBUG=True will print error to screen.
+      	    # setting DEBUG=True will print error to screen.
 
 if DEBUG:
     print "Entering DEBUG Mode...\n"
