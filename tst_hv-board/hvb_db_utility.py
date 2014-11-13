@@ -12,11 +12,10 @@ import csv
 
 __author__ = "Bronson Edralin"
 __copyright__ = "Copyright 2014 Instrumentation Development Laboratory (IDLab), Department of Physics, University of Hawaii at Manoa"
-__credits__ = ["Christian A. Damo", "Reed Shinsato"]
-__version__ = "0.01"
+__version__ = "1.00"
 __maintainer__ = "Bronson Edralin"
 __email__ = "bedralin@hawaii.edu"
-__status__ = "Prototype"
+__status__ = "Ready"
 
 DEBUG=False # NOT NECESSARY because error is printed in HVB_ASSEMBLY_log file
 	   # setting DEBUG=True will print error to screen.
