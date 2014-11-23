@@ -48,13 +48,36 @@ keith.Check_Error()
 #keith.reset()
 #time.sleep(1)
 
-voltage_unit = keith.voltage_unit
-print voltage_unit
+time.sleep(1)
+print "Testing Configuration"
+configg=keith.configure
+print configg
 keith.Check_Error()
 
-voltage_unit = keith.voltage_unit
-print voltage_unit
+time.sleep(1)
+"""
+print "testing voltage config (AC, DC)"
+keith.configure_voltage('DC')
+voltage_acdc = keith.configure_voltage
+print voltage_acdc
 keith.Check_Error()
+
+time.sleep(1)
+"""
+
+print "testing unit_voltage (VPP,VRMS, or)"
+keith.unit_voltage = 'VPP'
+unit_voltage = keith.unit_voltage
+print "Voltage unit is: ",unit_voltage
+keith.Check_Error()
+
+keith.configure = "VOLTAGE"
+keith.configure_voltage = "DC"
+func,acdc = keith.configure_voltage
+print "Keithley2010 Multimeter configured to: "+acdc+" "+func
+
+
+
 
 """
 #keith.configure("Resistance")

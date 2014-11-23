@@ -1,7 +1,31 @@
 #!/usr/bin/env python
-'''
-This script is a database utility for IDLab.
-'''
+#Following command will print documentation of iseg_SHQ226L.py:
+#pydoc hvb_db_utility 
+
+"""
+AUTHORS:
+Bronson Edralin <bedralin@hawaii.edu>
+University of Hawaii at Manoa
+Instrumentation Development Lab (IDLab), WAT214
+
+OVERVIEW:
+This is a database utility used for IDLab. It will automatically take your csv file and upload it to IDLab's postgreSQL database on IDLab's server which lies on idlab.phys.hawaii.edu
+
+dbname = postgres
+superuser = postgres
+password = ????
+
+create ssh tunnel before you use this:
+ssh -L 3000:localhost:3000 postgres@idlab.phys.hawaii.edu
+    ** Then enter password for postgres **
+
+Then use settings to access postgreSQL database:
+host = 'localhost',
+port = '3000',
+dbname = 'postgres',
+user = 'postgres',
+password = 'pass123'
+"""
 
 import datetime
 import time
@@ -25,11 +49,11 @@ class DatabaseUtility:
     through the python. This is basically an API that controls actions
     done to the database utilizing the psycopg2 package.
     '''
-    def __init__(self,host='192.168.153.108',dbname='mydb',user='bronson',password='pass123'):
+    def __init__(self,host='localhost',port='3000',dbname='mydb',user='bronson',password='pass123'):
 
-	#ssh bronson@193.168.153.108 -L 5432:localhost:5432 -p hunt123
+	#ssh -L 5432:localhost:5432 bronson@193.163.153.108 
 	
-	DatabaseInfo = 'host='+'127.0.0.1'+ ' port=5000'+' dbname='+dbname+' user='+user+' password='+password
+	DatabaseInfo = 'host='+host+ ' port='+port+' dbname='+dbname+' user='+user+' password='+password
 	print "Connecting to database\n ->%s\n"%(DatabaseInfo)
 	self.conn = psycopg2.connect(DatabaseInfo)
 	self.cur = self.conn.cursor()
@@ -60,7 +84,7 @@ class DatabaseUtility:
 		    self.cur.execute("BEGIN;")
 		    self.cur.execute("SAVEPOINT my_savepoint;")
 		    #create the command name here
-		    sql = "INSERT INTO "+tableName+" (DateTime,BoardID,"+\
+		    sql = "INSERT INTO "+tableName+" (DateTime,SerialNumber,"+\
 		    "BoardName,Channel,ISEG_V,LoadRelay1,LoadRelay2,K,"+\
 		    "MCPAT,MCPAB,MCPBT,MCPBB,Result_V) VALUES ('"+row[1]\
 		    +"','"+row[2]+"','"+row[3]+"',"+row[4]+","+row[5]+\
@@ -109,14 +133,14 @@ class DatabaseUtility:
 	    
 	try:
 	    #otherwise the program creates the command string
-	    sql = 'CREATE TABLE '+tableName+'( DateTime timestamp with '+\
-		'time zone NOT NULL, BoardID character varying NOT NULL, BoardName '+\
+	    sql = 'CREATE TABLE '+tableName+'( DateTime timestamp with no '+\
+		'time zone NOT NULL, SerialNumber character varying NOT NULL, BoardName '+\
 		'character varying NOT NULL, Channel integer NOT NULL, ISEG_V '\
 		'integer NOT NULL, LoadRelay1 integer NOT NULL, LoadRelay2 integer '\
 		'NOT NULL, K integer NOT NULL, MCPAT integer NOT NULL, MCPAB '+\
 		'integer NOT NULL, MCPBT integer NOT NULL, MCPBB integer NOT NULL, '\
 		+'Result_V double precision, CONSTRAINT '+tableName+'_prim_key '+\
-		'PRIMARY KEY (DateTime, BoardID, BoardName, Channel,ISEG_V,LoadRelay1'+\
+		'PRIMARY KEY (DateTime, SerialNumber, BoardName, Channel,ISEG_V,LoadRelay1'+\
 		',LoadRelay2,K,MCPAT,MCPAB,MCPBT,MCPBB,Result_V)) WITH( OIDS=FALSE);'	    
 	    #types it out at the psql prompt
 	    self.cur.execute(sql)
@@ -169,4 +193,13 @@ class DatabaseUtility:
 	if true_or_false==True:
 	    print 'Table "'+tableName+'" already exists...'
 	return true_or_false
+
+def upload_to_database(csv_file_name,table_name):
+    db=hvb_db_utility.DatabaseUtility()
+
+    # db.create_table("HVB_RawTest")  # creating new table with headers
+    # insert data into database
+    # db.insert_data_into_database("BARCODENUM_hvb_test_raw_r1BE.csv","HVB_RawTest")
+    # db.close_conn()    # close connection to database
+
 

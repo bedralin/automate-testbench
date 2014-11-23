@@ -60,16 +60,17 @@ class Keithley_2010(object):
 
     def Check_Error(self):
 	error_numb,error = self.link.ask("SYST:ERR?").split(',')
+	print "checking for error"
 	if (error_numb != "0") and (error_numb != "-420"):
 	    print "Error has occured: "+error_numb+", "+error
 	    return "Error has occured: "+error_numb+", "+error
-	elif (error_numb == "-420"):
+	elif (error_numb == "-420" and error != '"Query UNTERMINATED"'):
             print "Error has occured: "+error_numb+", "+error
             return "Error has occured: "+error_numb+", "+error    
     # SCPI signal oriented measurement commands
     @property
     def configure(self):
-	return self.link.ask(":CONFigure?")
+	return self.link.ask(":sens:func?")
 
     @configure.setter
     def configure(self,function):
@@ -83,10 +84,13 @@ class Keithley_2010(object):
 
     @property
     def configure_voltage(self):
-        return self.link.ask(":CONFigure?")
+        func,acdc=self.link.ask(":sens:func?").split(':')
+	func = func.replace('"','')
+	acdc = acdc.replace('"','')
+	return func.replace("\n",""),acdc.replace("\n","")
 
     @configure_voltage.setter
-    def configure_voltage(self,acdc):
+    def configure_voltage(self,acdc='DC'):
         valid_set = {'AC','DC'}
         acdc = acdc.upper()
         if (acdc not in valid_set):
@@ -96,10 +100,11 @@ class Keithley_2010(object):
  
     @property
     def configure_current(self):
-        return self.link.ask(":CONFigure?")
+        func,acdc=self.link.ask(":sens:func?").split(':')
+        return func.replace('"',''),acdc.replace('"','')
 
     @configure_current.setter
-    def configure_current(self,acdc):
+    def configure_current(self,acdc='DC'):
         valid_set = {'AC','DC'}      
         acdc = acdc.upper()
         if (acdc not in valid_set):
@@ -108,11 +113,12 @@ class Keithley_2010(object):
             self.link.cmd("CONFigure:CURRent:"+acdc)   
 
     @property
-    def voltage_unit(self):
-        return self.link.ask(":UNIT:VOLTage:AC?")
-
-    @voltage_unit.setter
-    def voltage_unit(self, unit):
+    def unit_voltage(self):
+        unit=self.link.ask(":UNIT:VOLTage?")
+	unit=unit.replace("\n","")
+	return unit
+    @unit_voltage.setter
+    def unit_voltage(self, unit='VPP'):
         valid_set = {'VPP','VRMS','DBM'}
         unit = unit.upper()
         if unit not in valid_set:
@@ -120,3 +126,11 @@ class Keithley_2010(object):
         else:
             self.link.cmd("VOLTage:UNIT "+unit)
 
+    @property
+    def read_voltage(self):
+	voltage = self.link.ask(":READ?").replace("\n","")
+	return voltage
+
+    @property
+    def read_current(self):
+        return self.link.ask(":READ?")
